@@ -1,10 +1,14 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import img from "../../assets/images/login/login.svg";
 import { AuthContext } from "../../contexts/AuthProvider/AuthProvider";
 
 const Login = () => {
+  const location = useLocation()
+  const navigate = useNavigate()
   const {login} = useContext(AuthContext)
+  let from = location.state?.from?.pathname || "/";
+
   const handleLogin = (event) => {
     event.preventDefault()
     const form = event.target;
@@ -14,6 +18,7 @@ const Login = () => {
     .then(res => {
       const user = res.user
       form.reset()
+      navigate(from, { replace: true })
       console.log(user)
     })
     console.log(email, password)
@@ -32,7 +37,7 @@ const Login = () => {
                 <span className="label-text">Email</span>
               </label>
               <input
-                type="text"
+                type="email"
                 placeholder="email"
                 className="input input-bordered"
                 name="email"
@@ -43,7 +48,7 @@ const Login = () => {
                 <span className="label-text">Password</span>
               </label>
               <input
-                type="text"
+                type="password"
                 placeholder="password"
                 className="input input-bordered"
                 name="password"

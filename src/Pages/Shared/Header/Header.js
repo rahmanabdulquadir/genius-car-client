@@ -17,9 +17,14 @@ const Header = () => {
           <Link to={"/"}>Home</Link>
         </li>
         {
-          user?.uid ? <li onClick={handleLogOut} className="font-semibold">
+          user?.uid ? <>
+          <li className="font-semibold">
+          <Link to={"/orders"}>Orders</Link>
+        </li>
+          <li onClick={handleLogOut} className="font-semibold">
           <Link to={"/login"}>Logout</Link>
-        </li> : <li className="font-semibold">
+        </li>
+          </> : <li className="font-semibold">
         <Link to={"/login"}>Login</Link>
       </li>
         }
