@@ -4,25 +4,42 @@ import img from "../../assets/images/login/login.svg";
 import { AuthContext } from "../../contexts/AuthProvider/AuthProvider";
 
 const Login = () => {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const {login} = useContext(AuthContext)
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   let from = location.state?.from?.pathname || "/";
 
   const handleLogin = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
-    login(email, password)
-    .then(res => {
-      const user = res.user
-      form.reset()
-      navigate(from, { replace: true })
-      console.log(user)
-    })
-    console.log(email, password)
-  }
+    login(email, password).then((res) => {
+      const user = res.user;
+      form.reset();
+      const currentUser = {
+        email: user.email,
+      };
+      console.log(currentUser);
+      // get jwt token
+      fetch(`http://localhost:5000/jwt`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(currentUser),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          // local storage is easiest but not the best place to store a web token
+          localStorage.setItem("genius-token", data.token);
+          navigate(from, { replace: true })
+        });
+      
+    });
+    console.log(email, password);
+  };
   return (
     <div className="hero w-full my-20">
       <div className="hero-content grid gap-20 md:grid-cols-2 flex-col lg:flex-row">

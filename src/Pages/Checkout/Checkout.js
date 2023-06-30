@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
-import { useLoaderData } from "react-router-dom";
+import { Navigate, useLoaderData, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthProvider/AuthProvider";
 
 const Checkout = () => {
-  const { user } = useContext(AuthContext);
   const { _id, title, price } = useLoaderData();
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate()
 
   const handlePlaceOrder = (event) => {
     event.preventDefault();
@@ -24,26 +25,34 @@ const Checkout = () => {
       message,
     };
 
+    // if(phone.length > 10) {
+    //   alert('Phone number should be 10 characters or longer')
+    // }
+    // else{
 
-    fetch('http://localhost:5000/orders',{
-      method: 'POST',
+    // }
+
+    fetch("http://localhost:5000/orders", {
+      method: "POST",
       headers: {
-        "content-type" : "application/json"
+        "content-type": "application/json",
       },
-      body: JSON.stringify(order)
+      body: JSON.stringify(order),
     })
-    .then(res => res.json())
-    .then(data => {
-      if(data.acknowledged){
-        alert('Your order placed')
-        form.reset()
-      }
-      console.log(data)
-    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.acknowledged) {
+          alert("order placed successfully");
+          form.reset();
+          navigate('/orders')
+        }
+      })
+      .catch((err) => console.error(err));
   };
   return (
     <div>
-      <form onSubmit={handlePlaceOrder}>
+      <form className="w-4/5 mx-auto py-10" onSubmit={handlePlaceOrder}>
         <h2 className="text-4xl">You are about to order: {title}</h2>
         <h4 className="text-3xl">Price: {price}</h4>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -82,7 +91,13 @@ const Checkout = () => {
           required
         ></textarea>
 
-        <input className="btn" type="submit" value="Place Your Order" />
+        <div className="flex items-center mx-auto my-5">
+          <input
+            className="btn w-1/2 mx-auto"
+            type="submit"
+            value="Place Your Order"
+          />
+        </div>
       </form>
     </div>
   );
